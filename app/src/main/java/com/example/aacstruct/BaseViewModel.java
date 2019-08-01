@@ -13,7 +13,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
 /**
- * @author hongjiang
+ * @author 慕涵曦
  * @date 2019-08-01
  **/
 public class BaseViewModel extends AndroidViewModel {
