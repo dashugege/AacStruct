@@ -1,5 +1,6 @@
 package com.example.aacstruct;
 
+import android.app.Application;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -61,12 +62,9 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
                 ((ParameterizedType) (getClass().getGenericSuperclass())).getActualTypeArguments().length > 0) {
             try {
                 Class<VM> clz = ((Class<VM>) ((ParameterizedType) (getClass().getGenericSuperclass())).getActualTypeArguments()[0]);
-                VM model = clz.newInstance();
-                ViewModelProvider.Factory factory = model.getFactory();
-                baseViewModel = ViewModelProviders.of(this, factory).get(clz);
-            } catch (java.lang.InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+                baseViewModel = clz.getConstructor(Application.class).newInstance(getApplication());
+                getLifecycle().addObserver(new BaseViewModel(getApplication()));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }else {
