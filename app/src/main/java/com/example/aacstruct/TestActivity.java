@@ -33,6 +33,11 @@ public class TestActivity extends BaseActivity<TestActivity.TT>{
 
     }
 
+    @Override
+    protected TT initViewModel() {
+        return new TT(getApplication());
+    }
+
     static class TT extends BaseViewModel{
 
 

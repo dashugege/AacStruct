@@ -1,13 +1,7 @@
 package com.example.aacstruct;
-
-import android.app.Application;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-
-import java.lang.reflect.ParameterizedType;
 
 
 /**
@@ -22,9 +16,10 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         super.onCreate(savedInstanceState);
         getSaveInstanceState(savedInstanceState);
         setContentView(setLayoutId());
+        baseViewModel = initViewModel() ;
         initView();
         addOnListener();
-        createViewModel();
+        getLifecycle().addObserver(baseViewModel);
     }
 
     /**
@@ -47,30 +42,19 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     protected abstract void initView();
 
     /**
-     * view.setListener(new View.OnClickListerer(){})
+     * View.setListener(new View.OnClickListerer(){})
      */
     protected abstract void addOnListener();
+
+    /**
+     * create ViewModel
+     * @return
+     */
+    protected abstract VM initViewModel();
 
     /**
      * Listerner ViewModel
      */
     protected abstract void subscribeToModel();
-
-
-    private void createViewModel(){
-        if (getClass().getGenericSuperclass() instanceof ParameterizedType &&
-                ((ParameterizedType) (getClass().getGenericSuperclass())).getActualTypeArguments().length > 0) {
-            try {
-                Class<VM> clz = ((Class<VM>) ((ParameterizedType) (getClass().getGenericSuperclass())).getActualTypeArguments()[0]);
-                baseViewModel = clz.getConstructor(Application.class).newInstance(getApplication());
-                getLifecycle().addObserver(new BaseViewModel(getApplication()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }else {
-            throw new UnsupportedOperationException("please add generic parameter");
-        }
-
-    }
 
 }
